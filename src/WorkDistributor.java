@@ -19,40 +19,32 @@ public class WorkDistributor {
 			verboseMode = true;
 		}
 		DatagramSocket ds = new DatagramSocket(PORT);
-		ds.setSoTimeout(500000); // 500 sekuntia
+		ds.setSoTimeout(10000); // 10 sekuntia
 		try {
 			while (true) {
 				byte[] byteArea = new byte[256];
-				DatagramPacket receivedPacket = new DatagramPacket(byteArea,
-						byteArea.length);
+				DatagramPacket receivedPacket = new DatagramPacket(byteArea, byteArea.length);
 				ds.receive(receivedPacket);
 				if (verboseMode) {
-					System.out.println("Connection from "
-							+ receivedPacket.getAddress() + " port "
-							+ receivedPacket.getPort());
+					System.out.println(
+							"Connection from " + receivedPacket.getAddress() + " port " + receivedPacket.getPort());
 				}
 				// what was received?
-				String message = new String(receivedPacket.getData(), 0,
-						receivedPacket.getLength());
+				String message = new String(receivedPacket.getData(), 0, receivedPacket.getLength());
 				int contactPort = -1;
 				try {
 					contactPort = Integer.parseInt(message.trim());
 				} catch (NumberFormatException e) {
-					System.err
-							.println("UDP error, message should represent number, message = "
-									+ message);
+					System.err.println("UDP error, message should represent number, message = " + message);
 				}
 				if (contactPort < 1024 || contactPort > 65535) {
 					if (verboseMode) {
-						System.out.println("Errorneous suggestion for port '"
-								+ message + "'");
-						System.out.println("Contact attempt from "
-								+ ds.getInetAddress() + " ignored.");
+						System.out.println("Errorneous suggestion for port '" + message + "'");
+						System.out.println("Contact attempt from " + ds.getInetAddress() + " ignored.");
 					}
 					continue; // jump over the rest
 				}
-				new WorkDistributor.WorkDistributionHandler(
-						receivedPacket.getAddress(), contactPort).start();
+				new WorkDistributor.WorkDistributionHandler(receivedPacket.getAddress(), contactPort).start();
 			} // while
 		} catch (InterruptedIOException e) {
 		}
@@ -86,31 +78,25 @@ public class WorkDistributor {
 				ObjectInputStream oIn = new ObjectInputStream(iS);
 				int clients = (int) (Math.random() * 9) + 2;
 				if (verboseMode) {
-					System.out.println("Writing " + clients + " to "
-							+ clientAddress + " at port " + clientPort);
+					System.out.println("Writing " + clients + " to " + clientAddress + " at port " + clientPort);
 				}
 				oOut.writeInt(clients);
 				oOut.flush();
 				boolean aborting = receivePortNumbers(oIn, clients);
 				if (aborting) {
 					if (verboseMode) {
-						System.out.println("Closing connection to "
-								+ clientAddress + " at port " + clientPort);
+						System.out.println("Closing connection to " + clientAddress + " at port " + clientPort);
 					}
 				} else {
 					// try to make the socket connection
 					for (int i = 0; i < clients; i++) {
 						if (verboseMode) {
-							System.out.println("Trying to connect to "
-									+ portNumbers[i]);
+							System.out.println("Trying to connect to " + portNumbers[i]);
 						}
-						calculators[i] = new Socket(clientAddress,
-								portNumbers[i]);
-						numberStreams[i] = new ObjectOutputStream(
-								calculators[i].getOutputStream());
+						calculators[i] = new Socket(clientAddress, portNumbers[i]);
+						numberStreams[i] = new ObjectOutputStream(calculators[i].getOutputStream());
 						if (verboseMode) {
-							System.out.println("Connection to " + i
-									+ "'th adder created.");
+							System.out.println("Connection to " + i + "'th adder created.");
 						}
 						sleep(100);
 					}
@@ -120,8 +106,7 @@ public class WorkDistributor {
 						calculators[i].close();
 					}
 					if (verboseMode) {
-						System.out
-								.println("Connections to calculators closing ...");
+						System.out.println("Connections to calculators closing ...");
 					}
 				}
 				oOut.writeInt(0);
@@ -139,28 +124,25 @@ public class WorkDistributor {
 			}
 		} // run
 
-		private boolean makeTest(int question, int answer,
-				ObjectOutputStream masterOut, ObjectInputStream masterIn)
+		private boolean makeTest(int question, int answer, ObjectOutputStream masterOut, ObjectInputStream masterIn)
 				throws IOException {
 			masterOut.writeInt(question);
 			masterOut.flush();
 			int answerRead = masterIn.readInt();
 			if (answerRead == -1) {
-				System.err.println("Client answered with -1 to question "
-						+ question + " ... aborting.");
+				System.err.println("Client answered with -1 to question " + question + " ... aborting.");
 				// return true;
 			}
 			if (answer != answerRead) {
-				System.err.println("Error in client: wrong answer to query ("
-						+ question + "). Expecting " + answer + " got "
-						+ answerRead + ".");
+				System.err.println("Error in client: wrong answer to query (" + question + "). Expecting " + answer
+						+ " got " + answerRead + ".");
 				return true;
 			}
 			return false;
 		}
 
-		private void generateTraffic(ObjectOutputStream[] streams, int calcs,
-				ObjectOutputStream masterOut, ObjectInputStream masterIn) {
+		private void generateTraffic(ObjectOutputStream[] streams, int calcs, ObjectOutputStream masterOut,
+				ObjectInputStream masterIn) {
 			int table[] = new int[calcs];
 			int sum = 0;
 			int lkm = 0;
@@ -229,8 +211,7 @@ public class WorkDistributor {
 				System.out.println("");
 				for (int i = 0; i < calcs; i++) {
 					if ((table[biggest] == table[i]) && (i != biggest)) {
-						System.out
-								.println("Tie with expected value " + (i + 1));
+						System.out.println("Tie with expected value " + (i + 1));
 					}
 				}
 				// test 6
@@ -260,8 +241,7 @@ public class WorkDistributor {
 				}
 				makeTest(3, lkm, masterOut, masterIn);
 			} catch (IOException e) {
-				System.err
-						.println("Received exception while testing ... aborting.");
+				System.err.println("Received exception while testing ... aborting.");
 				System.err.println("Exception: " + e);
 				return;
 			}
@@ -275,16 +255,14 @@ public class WorkDistributor {
 			for (int i = 0; i < clients; i++) {
 				int p;
 				if (verboseMode) {
-					System.out.println("Trying to receive " + i
-							+ "th port number.");
+					System.out.println("Trying to receive " + i + "th port number.");
 				}
 				try {
 					p = oIn.readInt();
 				} catch (IOException e) {
 					System.out.println(e);
 					if (verboseMode) {
-						System.out
-								.println("Error in reading portnumbers ... aborting.");
+						System.out.println("Error in reading portnumbers ... aborting.");
 					}
 					aborting = true;
 					break;
@@ -292,8 +270,7 @@ public class WorkDistributor {
 				if (i == 0 && p == -1) {
 					// abort, the client didn't receive previous message in time
 					if (verboseMode) {
-						System.out
-								.println("Received -1 from client ... aborting.");
+						System.out.println("Received -1 from client ... aborting.");
 					}
 					aborting = true;
 					break;
@@ -301,8 +278,7 @@ public class WorkDistributor {
 				if (p < 1024 || p > 65535) {
 					// illegal port number
 					if (verboseMode) {
-						System.out.println("Illegal port " + p
-								+ " from client ... aborting.");
+						System.out.println("Illegal port " + p + " from client ... aborting.");
 					}
 					aborting = true;
 					break;
