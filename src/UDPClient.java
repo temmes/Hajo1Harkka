@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class UDPClient implements Runnable {
+public class UDPClient{
 	// kaikkee UDP client juttui tanne sit
 	public static void main (String[] arga)throws Exception{
 		
