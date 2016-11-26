@@ -1,37 +1,24 @@
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.io.*;
+import java.net.*;
 
-
-public class UDPClient implements Runnable  {
-	//kaikkee UDP client juttui tanne sit
-	
-	private final int portti;
-	
-	public UDPClient (int portti) {
+public class UDPClient implements Runnable {
+	// kaikkee UDP client juttui tanne sit
+	public static void main (String[] arga)throws Exception{
 		
-		this.portti = portti;
-	}
-	
-	@Override
-	
-	public void run(){
-		try(DatagramSocket clientSocket = new DatagramSocket(portti)){
-			byte[] buffer = new byte[50000];
-			clientSocket.setSoTimeout(3000);
-			while (true){
-				DatagramPacket datagramPacket = new DatagramPacket(buffer, 0, buffer.length);
-				clientSocket.receive(datagramPacket);
-				
-				String vastaanotettuViesti = new String(datagramPacket.getData());
-			}
-
-		} catch (SocketException e){
-			e.printStackTrace();
-		} catch (IOException e){
-			System.out.println("Timeout, Clienti suljetaan");
-			e.printStackTrace();
-		}
+		DatagramSocket ds = new DatagramSocket();
+		
+		byte[] b = new byte[40000];
+		
+		InetAddress ia = InetAddress.getLocalHost();
+		DatagramPacket dp =  new DatagramPacket(b,b.length,ia,3126);
+		ds.send(dp);
+		
+		byte[] b1 = new byte[50000];
+		
+		DatagramPacket dp1 = new DatagramPacket(b1, b1.length);
+		ds.receive(dp1);
+		
+		String str = new String(dp1.getData());
+		System.out.println("results" + str);
 	}
 }
