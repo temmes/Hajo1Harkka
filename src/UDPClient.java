@@ -5,6 +5,13 @@ public class UDPClient{
 	// kaikkee UDP client juttui tanne sit
 	public static void main (String[] arga)throws Exception{
 		
+		String ip = "localhost";
+		int port = 3126;
+		Socket s = new Socket(ip, port);
+		
+		OutputStreamWriter os = new OutputStreamWriter(s.getOutputStream());
+		PrintWriter out = new PrintWriter(os);
+		
 		DatagramSocket ds = new DatagramSocket();
 		
 		byte[] b = new byte[40000];
@@ -20,5 +27,7 @@ public class UDPClient{
 		
 		String str = new String(dp1.getData());
 		System.out.println("results" + str);
+		ds.close();
+		s.close();
 	}
 }
