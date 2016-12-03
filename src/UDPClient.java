@@ -29,7 +29,7 @@ public class UDPClient{
 			
 				int portti = WorkDistributor.PORT;
 				Socket soketti = new Socket(ia,portti);
-				System.out.println("yhteys tehty...");
+				System.out.println("yhteys tehty...");  // TASSA JOTAIN VIKAA, EN TIEDA MIKSI EI HALUA YHDISTYA
 				
 				InputStream	is = soketti.getInputStream();
 				OutputStream os = soketti.getOutputStream();
@@ -37,6 +37,7 @@ public class UDPClient{
 				ObjectOutputStream output = new ObjectOutputStream(os);
 				ObjectInputStream input = new ObjectInputStream(is);
 				
+				//ALLA OLEVA LOOPPI PRUJUIST, EN TIEDA TARVIIKO??
 				for (int i=0; i<10; i++) {
 					Point p = new Point((int)(20*Math.random()), (int)(20*Math.random()));
 					output.writeObject(p); output.flush();
@@ -48,7 +49,9 @@ public class UDPClient{
 					} // for
 					output.close(); output.close(); soketti.close();
 			}catch(IOException e){System.out.println(e);}
-							
+				
+			
+			// KAIKKI TÄS ALHAAL OLLU KOKEILUU			
 			/*DatagramPacket vastaanotettuPaketti = new DatagramPacket(vastaanotettuData, vastaanotettuData.length);
 		      ds.receive(vastaanotettuPaketti);
 		      
