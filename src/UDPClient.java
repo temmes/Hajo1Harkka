@@ -1,37 +1,30 @@
-import java.awt.Point;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 
 public class UDPClient {
 
-		Socket soketti = null;
-		ServerSocket ss;
-		int portti;
-		String porttinumero;
-		static ObjectOutputStream output = null;
-		ObjectInputStream input = null;
+		static Socket soketti;
+		static ServerSocket ss;
+		static int portti;
+		static byte[] lahetysData;
+		static String porttinumero;
+		static ObjectOutputStream output;
+		static ObjectInputStream input;
 		static int tiedostovirta = 0;
 		static Summaaja[] summatut;
 		static Thread[] threads;
-		DatagramPacket lahtevaPaketti;
-		DatagramSocket ds;
+		static DatagramPacket lahtevaPaketti;
+		static DatagramSocket ds;
 		
-		public void clientti() throws IOException{
-		// luodaan datagram soketti
-			
+		public void init() throws IOException{
+		
+		InetAddress ia = InetAddress.getLocalHost();
 		portti = 3126;
 		porttinumero = "6000";
-		ds = new DatagramSocket();
-
-		// yhdistetaan serveriin
-
-		byte[] lahetysData = new byte[256];
 		lahetysData = porttinumero.getBytes();
-
-		InetAddress ia = InetAddress.getLocalHost();
 		lahtevaPaketti = new DatagramPacket(lahetysData, lahetysData.length, ia, 3126);
-		ServerSocket ss = new ServerSocket(6000);
+		ds = new DatagramSocket();
+		ss = new ServerSocket(6000);
 		
 		System.out.println("Lahetetaan datagram paketti serverille");
 		try{
