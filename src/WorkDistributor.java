@@ -12,14 +12,14 @@ import java.net.Socket;
 public class WorkDistributor {
 
 	public static final int PORT = 3126;
-	public static boolean verboseMode = true;
+	public static boolean verboseMode = false;
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 1 && args[0].equals("verbose")) {
 			verboseMode = true;
 		}
 		DatagramSocket ds = new DatagramSocket(PORT);
-		ds.setSoTimeout(10000); // 10 sekuntia
+		ds.setSoTimeout(500000); // 500 sekuntia
 		try {
 			while (true) {
 				byte[] byteArea = new byte[256];
